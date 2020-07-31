@@ -154,9 +154,10 @@ class GroupRoleInheritance implements GroupRoleInheritanceInterface {
 
           // Get mapped roles for relation type. Filter array to remove
           // unmapped roles.
-          $relation_config = $this->getSubgroupRelationConfig($path_supergroup_id, $path_subgroup_id);
-          $path_role_map[$path_supergroup_id][$path_subgroup_id] = array_filter($relation_config['child_role_mapping']);
-          $path_role_map[$path_subgroup_id][$path_supergroup_id] = array_filter($relation_config['parent_role_mapping']);
+          if ($relation_config = $this->getSubgroupRelationConfig($path_supergroup_id, $path_subgroup_id)) {
+            $path_role_map[$path_supergroup_id][$path_subgroup_id] = array_filter($relation_config['child_role_mapping']);
+            $path_role_map[$path_subgroup_id][$path_supergroup_id] = array_filter($relation_config['parent_role_mapping']);
+          }
         }
         $role_map[] = $path_role_map;
 
@@ -210,9 +211,9 @@ class GroupRoleInheritance implements GroupRoleInheritanceInterface {
           continue;
         }
 
-        $direct_role_map = $path_role_map[$path_to_group_id][$path_direct_to_group_id];
+        $direct_role_map = isset($path_role_map[$path_to_group_id][$path_direct_to_group_id]) ? $path_role_map[$path_to_group_id][$path_direct_to_group_id] : NULL;
 
-        if (empty($inherited_roles_map)) {
+        if (empty($inherited_roles_map) && isset($direct_role_map)) {
           $inherited_roles_map = $direct_role_map;
         }
 
@@ -281,8 +282,8 @@ class GroupRoleInheritance implements GroupRoleInheritanceInterface {
       }
     }
 
-    $type = $this->subgroupRelations[$group_id][$subgroup_id];
-    return $subgroup_relations_config[$type];
+    $type = isset($this->subgroupRelations[$group_id][$subgroup_id]) ? $this->subgroupRelations[$group_id][$subgroup_id] : NULL;
+    return isset($subgroup_relations_config[$type]) ? $subgroup_relations_config[$type] : NULL;
   }
 
 }
