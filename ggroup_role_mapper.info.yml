@@ -3,5 +3,6 @@ description: 'Allows map roles between parent groups and subgroups'
 package: 'Group'
 type: 'module'
 core: '8.x'
+core_version_requirement: ^8 || ^9
 dependencies:
   - 'ggroup'
